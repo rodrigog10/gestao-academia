@@ -1,10 +1,7 @@
 package com.academia.gestao.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @AllArgsConstructor
@@ -12,6 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "tb_aluno")
+
+
 public class Aluno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

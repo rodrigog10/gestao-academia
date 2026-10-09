@@ -1,0 +1,8 @@
+
+
+
+
+to open the server
+
+cd "C:\Users\jose.bispo\Documents\pgsql\bin"
+pg_ctl.exe -D "C:\Users\jose.bispo\Documents\pgsql\data" start

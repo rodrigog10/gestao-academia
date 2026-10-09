@@ -3,6 +3,7 @@ package com.academia.gestao.controllers;
 import com.academia.gestao.domain.Aluno;
 import com.academia.gestao.requests.AlunoDTO;
 import com.academia.gestao.services.AlunoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +21,15 @@ public class AlunoController {
 
     private final AlunoService alunoService;
 
-    // método para criação
 
-
-
-    @PostMapping // criar coisinhas
-    public ResponseEntity<Aluno> cadastrarAluno(@RequestBody AlunoDTO alunoPostRequestBody) {
+    @PostMapping // cadastrar novo aluno
+    public ResponseEntity<Aluno> cadastrarAluno(@Valid @RequestBody AlunoDTO alunoPostRequestBody) {
         return new ResponseEntity<>(alunoService.save(alunoPostRequestBody), HttpStatus.CREATED);
     }
+
+
+
+
 
 
 

@@ -2,9 +2,10 @@ package com.academia.gestao.repository;
 
 import com.academia.gestao.domain.Aluno;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-
-public class AlunoRepository extends JpaRepository<Aluno, Long> {
+@Repository
+public interface AlunoRepository extends JpaRepository<Aluno, Long> {
 
 
 }

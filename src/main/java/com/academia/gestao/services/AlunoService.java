@@ -13,9 +13,11 @@ import org.springframework.stereotype.Service;
 public class AlunoService {
 
     private final AlunoRepository alunoRepository;
+    private final AlunoMapper alunoMapper;
 
     public Aluno save(AlunoDTO alunoPostRequestBody) {
-        return alunoRepository.save(AlunoMapper.INSTANCE.toAlunoEntity(alunoPostRequestBody));
+        Aluno alunoEntity = alunoMapper.toAlunoEntity(alunoPostRequestBody);
+        return alunoRepository.save(alunoEntity);
     }
 
 }
