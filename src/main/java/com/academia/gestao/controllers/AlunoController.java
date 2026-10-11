@@ -35,8 +35,8 @@ public class AlunoController {
 
     // create student
     @PostMapping
-    public ResponseEntity<Aluno> registerStudent(@Valid @RequestBody AlunoRequestDTO alunoPostRequestBody) {
-        return new ResponseEntity<>(alunoService.save(alunoPostRequestBody), HttpStatus.CREATED);
+    public ResponseEntity<AlunoResponseDTO> registerStudent(@Valid @RequestBody AlunoRequestDTO alunoRequestDTO) {
+        return new ResponseEntity<>(alunoService.save(alunoRequestDTO), HttpStatus.CREATED);
     }
 
     //delete student
@@ -48,5 +48,12 @@ public class AlunoController {
     }
 
     //update student
+    @PutMapping("/{id}")
+    public ResponseEntity<AlunoResponseDTO> updateStudent(@PathVariable Long id, @Valid @RequestBody AlunoRequestDTO alunoUpdatedRequestDTO) {
+
+        AlunoResponseDTO updatedStudent = alunoService.updateStudent(id, alunoUpdatedRequestDTO);
+        return ResponseEntity.ok(updatedStudent);
+
+    }
 
 }

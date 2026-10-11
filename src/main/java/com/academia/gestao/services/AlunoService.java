@@ -6,7 +6,6 @@ import com.academia.gestao.repository.AlunoRepository;
 import com.academia.gestao.requests.AlunoRequestDTO;
 import com.academia.gestao.requests.AlunoResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,47 +13,71 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+
 public class AlunoService {
 
-    private final AlunoRepository studentRepository;
-    private final AlunoMapper studentMapper;
+    private final AlunoRepository alunoRepository;
+    private final AlunoMapper alunoMapper;
 
+    private Aluno findAlunoStudentByid(Long id) {
+        return alunoRepository.findById(id).orElseThrow(() -> new RuntimeException("Aluno não encontrado com id" + id + "."));
+
+    }
+
+    // create student
+    //inicialmente eu envio o dado e guardo dentro de alunoRequestDTO, envio para o Mapper para transformar em entidade, salvo no banco e devolvo (?)
+    public AlunoResponseDTO save(AlunoRequestDTO alunoRequestDTO) {
+
+        Aluno alunoEntity = alunoMapper.toAlunoEntity(alunoRequestDTO);
+        Aluno alunoSaved = alunoRepository.save(alunoEntity);
+        AlunoResponseDTO alunoDTO = alunoMapper.toAlunoDTO(alunoSaved);
+        return alunoDTO;
+
+    }
+
+    // delete student
+    public void delete(Long id) {
+        // with guard clause
+        Aluno alunoEntity = alunoRepository.findById(id).orElseThrow(() -> new RuntimeException("Aluno não encontrado com id" + id + "."));
+        alunoRepository.delete(alunoEntity);
+    }
 
     //find one
     public AlunoResponseDTO findStudentById(Long id) {
-        Aluno studentEntity = studentRepository.findById(id)
+        // with guard clause
+        Aluno alunoEntity = alunoRepository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Aluno não encontrado com Id " + id + "."));
+        AlunoResponseDTO alunoFoundedDTO = alunoMapper.toAlunoDTO(alunoEntity);
+        return alunoFoundedDTO;
 
-        return studentMapper.toAlunoDTO(studentEntity);
     }
 
     //find all
 
     public List<AlunoResponseDTO> findAllStudents() {
-        List<Aluno> allStudentsEntitys = studentRepository.findAll();
-        return studentMapper.toAllAlunosDTO(allStudentsEntitys);
+        List<Aluno> allStudentsEntitys = alunoRepository.findAll();
+        return alunoMapper.toAllAlunosDTO(allStudentsEntitys);
 
-            // outra forma interessante é utilizar o Java Streams para listagem
+        // outra forma interessante é utilizar o Java Streams para listagem
         /*
             public List<AlunoResponseDTO> findAllStudents() {
-            return studentRepository.findAll()
+            return alunoRepository.findAll()
             .stream()
-            .map(alunoEntity -> studentMapper.toAlunoDTO(alunoEntity))
+            .map(alunoEntity -> alunoMapper.toAlunoDTO(alunoEntity))
             }
         */
     }
 
-    // create student
-    public Aluno save(AlunoRequestDTO alunoPostRequestBody) {
-        Aluno student = studentMapper.toAlunoEntity(alunoPostRequestBody);
-        return studentRepository.save(student);
-    }
+    //update student
 
-    // delete student
-    public void delete(Long id) {
-        // guard clause
-        Aluno studentEntity = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Aluno não encontrado com id" + id + "."));
+    public AlunoResponseDTO updateStudent(Long id,  AlunoRequestDTO alunoUpdatedRequestDTO) {
 
-        studentRepository.delete(studentEntity);
+        Aluno alunoEntity = findAlunoStudentByid(id);
+
+         alunoMapper.updateEntityFromDTO( alunoUpdatedRequestDTO , alunoEntity);
+
+        Aluno alunoUpdatedEntity = alunoRepository.save(alunoEntity);
+
+        return alunoMapper.toAlunoDTO(alunoUpdatedEntity);
     }
 }

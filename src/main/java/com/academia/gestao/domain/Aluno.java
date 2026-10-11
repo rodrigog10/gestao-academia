@@ -22,4 +22,5 @@ public class Aluno {
     private String email;
     @Column(nullable = false,  length = 11, unique = true)
     private String cpf;
+    private String senha;
 }
