@@ -1,8 +1,8 @@
 package com.academia.gestao.controllers;
 
-import com.academia.gestao.domain.Aluno;
+import com.academia.gestao.requests.AlunoPatchRequestDTO;
 import com.academia.gestao.requests.AlunoRequestDTO;
-import com.academia.gestao.requests.AlunoResponseDTO;
+import com.academia.gestao.responses.AlunoResponseDTO;
 import com.academia.gestao.services.AlunoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -56,4 +56,11 @@ public class AlunoController {
 
     }
 
+    //update something specific about student
+    @PatchMapping(path = "/{id}")
+    public ResponseEntity<AlunoResponseDTO> updateSomethingAboutTheStudent(@PathVariable Long id, @Valid @RequestBody AlunoPatchRequestDTO alunoPatchRequestDTO) {
+
+        AlunoResponseDTO updatedStudent = alunoService.updateSomethingAboutTheStudent(id, alunoPatchRequestDTO);
+        return ResponseEntity.ok(updatedStudent);
+    }
 }

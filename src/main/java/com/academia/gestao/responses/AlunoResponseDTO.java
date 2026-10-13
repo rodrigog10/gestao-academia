@@ -1,4 +1,4 @@
-package com.academia.gestao.requests;
+package com.academia.gestao.responses;
 import lombok.Getter;
 import lombok.Setter;
 
