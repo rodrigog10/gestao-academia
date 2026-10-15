@@ -11,7 +11,7 @@ import lombok.*;
 @Table(name = "tb_aluno")
 
 
-public class Aluno {
+public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
