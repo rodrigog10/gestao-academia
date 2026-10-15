@@ -43,7 +43,7 @@ public class StudentController {
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         studentService.delete(id);
-        // retorna apenas o status http da execução.
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -58,9 +58,9 @@ public class StudentController {
 
     //update something specific about student
     @PatchMapping(path = "/{id}")
-    public ResponseEntity<StudentResponseDTO> updatePartialFromRequest(@PathVariable Long id, @Valid @RequestBody StudentPatchRequestDTO studentPatchRequestDTO) {
+    public ResponseEntity<StudentResponseDTO> partialUpdate(@PathVariable Long id, @Valid @RequestBody StudentPatchRequestDTO studentPatchRequestDTO) {
 
-        StudentResponseDTO updatedStudent = studentService.updateSomethingAboutTheStudent(id, studentPatchRequestDTO);
+        StudentResponseDTO updatedStudent = studentService.partialUpdate(id, studentPatchRequestDTO);
         return ResponseEntity.ok(updatedStudent);
     }
 }

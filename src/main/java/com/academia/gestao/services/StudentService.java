@@ -11,80 +11,70 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
 @Service
 @RequiredArgsConstructor
-
 public class StudentService {
 
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
 
 
-    //private method to find the entity
     private Student findEntityById(Long id) {
-
-        return studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Aluno não encontrado com Id " + id + "."));
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found with Id " + id + "."));
     }
 
-    //public methods
+    // public methods
 
     // create student
     public StudentResponseDTO create(StudentRequestDTO studentRequestDTO) {
-
+        // put a custom exception here: student already exists.
         Student studentEntity = studentMapper.toStudentEntity(studentRequestDTO);
         Student savedStudent = studentRepository.save(studentEntity);
 
-        return studentMapper.toAlunoDTO(savedStudent);
+        return studentMapper.toStudentDTO(savedStudent);
     }
 
     // delete student
     public void delete(Long id) {
-        // with guard clause
-        Student studentEntity = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Aluno não encontrado com Id " + id + "."));
+        Student studentEntity = findEntityById(id);
         studentRepository.delete(studentEntity);
     }
 
-    //find one
+    // find one
     public StudentResponseDTO findById(Long id) {
-        // with guard clause
-        Student studentEntity = studentRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Aluno não encontrado com Id " + id + "."));
-
-        return studentMapper.toAlunoDTO(studentEntity);
+        Student studentEntity = findEntityById(id);
+        return studentMapper.toStudentDTO(studentEntity);
     }
 
-    //find all
+    // find all
     public List<StudentResponseDTO> findAll() {
-        List<Student> allStudentsEntitys = studentRepository.findAll();
-        return studentMapper.toAllAlunosDTO(allStudentsEntitys);
+        List<Student> allStudentsEntities = studentRepository.findAll();
+        return studentMapper.toStudentListDTO(allStudentsEntities);
 
-        // outra forma interessante é utilizar o Java Streams para listagem (não só para isso)
         /*
             public List<AlunoResponseDTO> findAllStudents() {
             return studentRepository.findAll()
             .stream()
-            .map(studentEntity -> studentMapper.toAlunoDTO(studentEntity))
+            .map(studentEntity -> studentMapper.toStudentDTO(studentEntity))
             }
         */
     }
 
-    //update student
-    public StudentResponseDTO update(Long id, StudentRequestDTO alunoUpdatedRequestDTO) {
-
+    // update student
+    public StudentResponseDTO update(Long id, StudentRequestDTO studentRequestDTO) {
         Student studentEntity = findEntityById(id);
-         studentMapper.updateEntityFromDTO( alunoUpdatedRequestDTO , studentEntity);
+        studentMapper.updateEntityFromDTO(studentRequestDTO, studentEntity);
         Student alunoUpdatedEntity = studentRepository.save(studentEntity);
 
-        return studentMapper.toAlunoDTO(alunoUpdatedEntity);
+        return studentMapper.toStudentDTO(alunoUpdatedEntity);
     }
 
-    public StudentResponseDTO updateSomethingAboutTheStudent(Long id, StudentPatchRequestDTO alunoPatchRequestDTO){
-
+    public StudentResponseDTO partialUpdate(Long id, StudentPatchRequestDTO studentPartialRequestDTO) {
         Student studentEntity = findEntityById(id);
-        studentMapper.updateEspecificEntityFromDTO(alunoPatchRequestDTO, studentEntity);
+        studentMapper.partialEntityUpdateFromDTO(studentPartialRequestDTO, studentEntity);
         Student alunoUpdatedEntity = studentRepository.save(studentEntity);
 
-        return studentMapper.toAlunoDTO(alunoUpdatedEntity);
+        return studentMapper.toStudentDTO(alunoUpdatedEntity);
     }
 }

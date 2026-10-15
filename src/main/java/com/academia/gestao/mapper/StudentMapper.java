@@ -13,18 +13,18 @@ import java.util.List;
 
 public interface StudentMapper {
     // dto to entity
-    Student toStudentEntity(StudentRequestDTO alunoRequestDTO);
+    Student toStudentEntity(StudentRequestDTO studentRequestDTO);
 
     //change all about him
-    void updateEntityFromDTO(StudentRequestDTO alunoRequestDTO, @MappingTarget Student alunoEntity);
+    void updateEntityFromDTO(StudentRequestDTO studentRequestDTO, @MappingTarget Student studentEntity);
 
     //change something about him
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEspecificEntityFromDTO(StudentPatchRequestDTO alunoPatchRequestDTO, @MappingTarget Student alunoEntity);
+    void partialEntityUpdateFromDTO(StudentPatchRequestDTO studentPatchRequestDTO, @MappingTarget Student studentEntity);
 
     // entity to dto
-    StudentResponseDTO toAlunoDTO(Student studentEntity);
+    StudentResponseDTO toStudentDTO(Student studentEntity);
 
     // entities to dto's
-    List<StudentResponseDTO> toAllAlunosDTO(List<Student> alunosEntity);
+    List<StudentResponseDTO> toStudentListDTO(List<Student> studentsEntities);
 }
