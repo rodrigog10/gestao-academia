@@ -8,16 +8,16 @@ import lombok.Data;
 @Data
 public class StudentRequestDTO {
 
-    @NotBlank(message = "O nome é obrigatório.")
-    @Size(min = 3, max = 80, message = "O nome deve ter entre 3 e 80 caracteres.")
+    @NotBlank(message = "Name is required.")
+    @Size(min = 3, max = 80, message = "Name must be between 3 and 80 characters.")
     private String name;
 
-    @Email(message = "Digite um Email válido.")
-    @NotBlank(message = "O Email é obrigatório.")
+    @Email(message = "Enter a valid email.")
+    @NotBlank(message = "Email is required.")
     private String email;
 
-    @NotBlank(message = "O CPF é obrigatório.")
-    @Size(min = 11, max = 11, message = "Deve conter exatamente 11 caracteres.")
+    @NotBlank(message = "CPF is required.")
+    @Size(min = 11, max = 11, message = "Must contain exactly 11 characters.")
     private String cpf;
 
 }

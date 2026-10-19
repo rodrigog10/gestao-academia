@@ -6,15 +6,13 @@ import lombok.Data;
 
 @Data
 public class StudentPatchRequestDTO {
-
-
-    @Size(min = 3, max = 80, message = "O nome deve ter entre 3 e 80 caracteres.")
+    @Size(min = 3, max = 80, message = "Name must be between 3 and 80 characters.")
     private String name;
 
-    @Email(message = "Digite um Email válido.")
+    @Email(message = "Enter a valid email.")
     private String email;
 
-    @Size(min = 11, max = 11, message = "Deve conter exatamente 11 caracteres.")
+    @Size(min = 11, max = 11, message = "Must contain exactly 11 characters.")
     private String cpf;
 
 }
