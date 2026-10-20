@@ -19,6 +19,7 @@ public interface StudentMapper {
     void updateEntityFromDTO(StudentRequestDTO studentRequestDTO, @MappingTarget Student studentEntity);
 
     //change something about him
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void partialEntityUpdateFromDTO(StudentPatchRequestDTO studentPatchRequestDTO, @MappingTarget Student studentEntity);
 
