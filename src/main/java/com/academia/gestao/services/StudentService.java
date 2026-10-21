@@ -9,6 +9,8 @@ import com.academia.gestao.requests.StudentPatchRequestDTO;
 import com.academia.gestao.requests.StudentRequestDTO;
 import com.academia.gestao.responses.StudentResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,8 @@ public class StudentService {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with Id " + id + "."));
     }
+
+
 
     // public methods
     @Transactional
@@ -50,18 +54,10 @@ public class StudentService {
     }
 
 
-    public List<StudentResponseDTO> findAll() {
-        List<Student> allStudentsEntities = studentRepository.findAll();
-        return studentMapper.toStudentListDTO(allStudentsEntities);
-        /*
-            public List<AlunoResponseDTO> findAllStudents() {
-            return studentRepository.findAll()
-            .stream()
-            .map(studentEntity -> studentMapper.toStudentDTO(studentEntity))
-            }
-        */
+    public Page<StudentResponseDTO> findAll(Pageable pageable) {
+        Page<Student> allStudentsEntities = studentRepository.findAll(pageable);
+        return allStudentsEntities.map(studentMapper::toStudentDTO);
     }
-
 
     @Transactional
     public StudentResponseDTO update(Long id, StudentRequestDTO studentRequestDTO) {
@@ -82,11 +78,21 @@ public class StudentService {
 
     @Transactional
     public StudentResponseDTO partialUpdate(Long id, StudentPatchRequestDTO studentPartialRequestDTO) {
-        Student studentEntity = findEntityById(id);
-        studentMapper.partialEntityUpdateFromDTO(studentPartialRequestDTO, studentEntity);
-        Student alunoUpdatedEntity = studentRepository.save(studentEntity);
 
-        return studentMapper.toStudentDTO(alunoUpdatedEntity);
+        Student studentEntity = findEntityById(id);
+        if (studentPartialRequestDTO.getCpf() != null &&
+                studentRepository.existsByCpfAndIdNot(studentPartialRequestDTO.getCpf(), id)) {
+            throw new BusinessRuleException("CPF already registered for another student: " + studentPartialRequestDTO.getCpf());
+        }
+        if (studentPartialRequestDTO.getEmail() != null &&
+                studentRepository.existsByEmailAndIdNot(studentPartialRequestDTO.getEmail(), id)) {
+            throw new BusinessRuleException("Email already registered for another student: " + studentPartialRequestDTO.getEmail());
+        }
+
+        studentMapper.partialEntityUpdateFromDTO(studentPartialRequestDTO, studentEntity);
+        Student studentUpdatedEntity = studentRepository.save(studentEntity);
+
+        return studentMapper.toStudentDTO(studentUpdatedEntity);
     }
 
     // delete student

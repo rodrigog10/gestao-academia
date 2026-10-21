@@ -6,6 +6,9 @@ import com.academia.gestao.responses.StudentResponseDTO;
 import com.academia.gestao.services.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +32,11 @@ public class StudentController {
 
     //find all
     @GetMapping
-    public ResponseEntity<List<StudentResponseDTO>> findAll() {
-        return ResponseEntity.ok(studentService.findAll());
+    public ResponseEntity<Page<StudentResponseDTO>> findAll(
+            @PageableDefault(page = 0, size = 10, sort = "name") Pageable pageable) {
+
+        Page<StudentResponseDTO> studentsPage = studentService.findAll(pageable);
+        return ResponseEntity.ok(studentsPage);
     }
 
     //create student
