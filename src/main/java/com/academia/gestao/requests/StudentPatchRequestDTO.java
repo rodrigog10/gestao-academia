@@ -1,8 +1,10 @@
 package com.academia.gestao.requests;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.hibernate.validator.constraints.br.CPF;
 
 @Data
 public class StudentPatchRequestDTO {
@@ -12,7 +14,7 @@ public class StudentPatchRequestDTO {
     @Email(message = "Enter a valid email.")
     private String email;
 
-    @Size(min = 11, max = 11, message = "Must contain exactly 11 characters.")
+    @CPF(message = "Enter a valid CPF.")
     private String cpf;
 
 }
