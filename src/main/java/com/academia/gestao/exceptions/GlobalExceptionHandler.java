@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
 }
 
 @ExceptionHandler({BusinessRuleException.class})
-    public ResponseEntity<StandardError> handleBussinesRuleException(BusinessRuleException e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> handleBusinessRuleException(BusinessRuleException e, HttpServletRequest request) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
     StandardError structuredErrorMessage = new StandardError(
             Instant.now(),
@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
     StandardError structuredErrorMessage = new StandardError(
             Instant.now(),
             status.value(),
-            "Email not Valid.",
+            "Invalid fields.",
             errorMessage,
             request.getRequestURI()
     );
@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
             DataIntegrityViolationException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.CONFLICT; // Código 409 (Conflict)
+        HttpStatus status = HttpStatus.CONFLICT;
 
         StandardError structuredErrorMessage = new StandardError(
                 Instant.now(),
