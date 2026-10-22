@@ -1,14 +1,11 @@
-
-
 spring:
   application:
     name: gestao-academia
 
-
   datasource:
-    url: jdbc:postgresql://localhost:5432/academia_db
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -20,5 +17,8 @@ spring:
       hibernate:
         format_sql: true
     open-in-view: false
+  config:
+    import:
+      - optional:file:.env[.properties]
 
 
