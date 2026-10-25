@@ -13,9 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-
 @RestController
 @RequiredArgsConstructor
 
@@ -24,13 +21,13 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    //find one
+
     @GetMapping(path = "/{id}")
     public ResponseEntity<StudentResponseDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(studentService.findById(id));
     }
 
-    //find all
+
     @GetMapping
     public ResponseEntity<Page<StudentResponseDTO>> findAll(
             @PageableDefault(page = 0, size = 10, sort = "name") Pageable pageable) {
@@ -39,13 +36,13 @@ public class StudentController {
         return ResponseEntity.ok(studentsPage);
     }
 
-    //create student
+
     @PostMapping
     public ResponseEntity<StudentResponseDTO> register(@Valid @RequestBody StudentRequestDTO studentRequestDTO) {
         return new ResponseEntity<>(studentService.create(studentRequestDTO), HttpStatus.CREATED);
     }
 
-    //delete student
+
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         studentService.delete(id);
@@ -53,7 +50,7 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    //update student
+
     @PutMapping("/{id}")
     public ResponseEntity<StudentResponseDTO> update(@PathVariable Long id, @Valid @RequestBody StudentRequestDTO studentUpdatedRequestDTO) {
 
@@ -62,7 +59,7 @@ public class StudentController {
 
     }
 
-    //update something specific about student
+
     @PatchMapping(path = "/{id}")
     public ResponseEntity<StudentResponseDTO> partialUpdate(@PathVariable Long id, @Valid @RequestBody StudentPatchRequestDTO studentPatchRequestDTO) {
 

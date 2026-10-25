@@ -8,9 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "tb_aluno")
+@Table(name = "tb_student")
 
-@Entity // uma classe marcada como entidade representa uma tabela no banco de dados.
+@Entity
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

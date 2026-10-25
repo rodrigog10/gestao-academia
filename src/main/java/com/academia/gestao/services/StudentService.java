@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +24,11 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
 
+    //private methods
     private Student findEntityById(Long id) {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with Id " + id + "."));
     }
-
-
 
     // public methods
     @Transactional
@@ -53,7 +51,6 @@ public class StudentService {
         return studentMapper.toStudentDTO(studentEntity);
     }
 
-
     public Page<StudentResponseDTO> findAll(Pageable pageable) {
         Page<Student> allStudentsEntities = studentRepository.findAll(pageable);
         return allStudentsEntities.map(studentMapper::toStudentDTO);
@@ -61,6 +58,7 @@ public class StudentService {
 
     @Transactional
     public StudentResponseDTO update(Long id, StudentRequestDTO studentRequestDTO) {
+
         Student studentEntity = findEntityById(id);
 
         if (studentRepository.existsByCpfAndIdNot(studentRequestDTO.getCpf(), id)) {

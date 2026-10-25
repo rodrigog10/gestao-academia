@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
             return ResponseEntity.status(status).body(structuredErrorMessage);
 }
 
-// patronization about the throwers exceptions from @Valid
+
 @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<StandardError> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
 
@@ -51,6 +51,7 @@ public class GlobalExceptionHandler {
     String errorMessage = e.getBindingResult().getFieldErrors().stream()
             .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
             .collect(Collectors.joining(" | "));
+
     StandardError structuredErrorMessage = new StandardError(
             Instant.now(),
             status.value(),
@@ -68,11 +69,13 @@ public class GlobalExceptionHandler {
 
         HttpStatus status = HttpStatus.CONFLICT;
 
+        String errorDetail = (e.getCause() != null) ? e.getCause().getMessage() : e.getMessage();
+
         StandardError structuredErrorMessage = new StandardError(
                 Instant.now(),
                 status.value(),
                 "Database integrity violation.",
-                "Integrity constraint violation in database.",
+                errorDetail,
                 request.getRequestURI()
         );
 
