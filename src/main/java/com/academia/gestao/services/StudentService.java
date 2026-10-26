@@ -78,6 +78,7 @@ public class StudentService {
     public StudentResponseDTO partialUpdate(Long id, StudentPatchRequestDTO studentPartialRequestDTO) {
 
         Student studentEntity = findEntityById(id);
+
         if (studentPartialRequestDTO.getCpf() != null &&
                 studentRepository.existsByCpfAndIdNot(studentPartialRequestDTO.getCpf(), id)) {
             throw new BusinessRuleException("CPF already registered for another student: " + studentPartialRequestDTO.getCpf());
