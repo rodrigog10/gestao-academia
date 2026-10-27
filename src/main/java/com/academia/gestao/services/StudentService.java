@@ -17,28 +17,56 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-
 @Transactional(readOnly = true)
 public class StudentService {
 
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
 
-    //private methods
+    // --- PRIVATE METHODS ---
+
     private Student findEntityById(Long id) {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with Id " + id + "."));
     }
 
-    // public methods
-    @Transactional
-    public StudentResponseDTO create(StudentRequestDTO studentRequestDTO) {
+    // to create
+    private void validateExistFields(StudentRequestDTO studentRequestDTO) {
         if (studentRepository.existsByCpf(studentRequestDTO.getCpf())) {
             throw new BusinessRuleException("Student already registered with CPF: " + studentRequestDTO.getCpf());
         }
         if (studentRepository.existsByEmail(studentRequestDTO.getEmail())) {
             throw new BusinessRuleException("Student already registered with Email: " + studentRequestDTO.getEmail());
         }
+    }
+
+    // to put method
+    private void validateUniqueFields(StudentRequestDTO studentRequestDTO, Long id) {
+        if (studentRepository.existsByCpfAndIdNot(studentRequestDTO.getCpf(), id)) {
+            throw new BusinessRuleException("CPF already registered for another student: " + studentRequestDTO.getCpf());
+        }
+        if (studentRepository.existsByEmailAndIdNot(studentRequestDTO.getEmail(), id)) {
+            throw new BusinessRuleException("Email already registered for another student: " + studentRequestDTO.getEmail());
+        }
+    }
+
+    // to patch method
+    private void partialValidateUniqueFields(StudentPatchRequestDTO studentPartialRequestDTO, Long id) {
+        if (studentPartialRequestDTO.getCpf() != null &&
+                studentRepository.existsByCpfAndIdNot(studentPartialRequestDTO.getCpf(), id)) {
+            throw new BusinessRuleException("CPF already registered for another student: " + studentPartialRequestDTO.getCpf());
+        }
+        if (studentPartialRequestDTO.getEmail() != null &&
+                studentRepository.existsByEmailAndIdNot(studentPartialRequestDTO.getEmail(), id)) {
+            throw new BusinessRuleException("Email already registered for another student: " + studentPartialRequestDTO.getEmail());
+        }
+    }
+
+    // --- PUBLIC METHODS ---
+
+    @Transactional
+    public StudentResponseDTO create(StudentRequestDTO studentRequestDTO) {
+        validateExistFields(studentRequestDTO);
 
         Student studentEntity = studentMapper.toStudentEntity(studentRequestDTO);
         Student savedStudent = studentRepository.save(studentEntity);
@@ -58,15 +86,8 @@ public class StudentService {
 
     @Transactional
     public StudentResponseDTO update(Long id, StudentRequestDTO studentRequestDTO) {
-
         Student studentEntity = findEntityById(id);
-
-        if (studentRepository.existsByCpfAndIdNot(studentRequestDTO.getCpf(), id)) {
-            throw new BusinessRuleException("CPF already registered for another student: " + studentRequestDTO.getCpf());
-        }
-        if (studentRepository.existsByEmailAndIdNot(studentRequestDTO.getEmail(), id)) {
-            throw new BusinessRuleException("Email already registered for another student: " + studentRequestDTO.getEmail());
-        }
+        validateUniqueFields(studentRequestDTO, id);
 
         studentMapper.updateEntityFromDTO(studentRequestDTO, studentEntity);
         Student alunoUpdatedEntity = studentRepository.save(studentEntity);
@@ -76,17 +97,8 @@ public class StudentService {
 
     @Transactional
     public StudentResponseDTO partialUpdate(Long id, StudentPatchRequestDTO studentPartialRequestDTO) {
-
         Student studentEntity = findEntityById(id);
-
-        if (studentPartialRequestDTO.getCpf() != null &&
-                studentRepository.existsByCpfAndIdNot(studentPartialRequestDTO.getCpf(), id)) {
-            throw new BusinessRuleException("CPF already registered for another student: " + studentPartialRequestDTO.getCpf());
-        }
-        if (studentPartialRequestDTO.getEmail() != null &&
-                studentRepository.existsByEmailAndIdNot(studentPartialRequestDTO.getEmail(), id)) {
-            throw new BusinessRuleException("Email already registered for another student: " + studentPartialRequestDTO.getEmail());
-        }
+        partialValidateUniqueFields(studentPartialRequestDTO, id);
 
         studentMapper.partialEntityUpdateFromDTO(studentPartialRequestDTO, studentEntity);
         Student studentUpdatedEntity = studentRepository.save(studentEntity);
