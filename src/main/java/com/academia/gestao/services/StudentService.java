@@ -23,7 +23,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
 
-    // --- PRIVATE METHODS ---
+    // private methods
 
     private Student findEntityById(Long id) {
         return studentRepository.findById(id)
